@@ -94,6 +94,12 @@ class Home(tk.Frame):
         self.btn_calculate.pack(pady=20)
 
     def selection_changed(self, *args):
+        """
+        This methode is called to handle the input-change of the OptionMenue.
+
+        :param args: (ignored)
+        :return: None
+        """
         mode_name: Final[str] = self.selected_mode.get()
 
         for opt in self.options_link:
@@ -102,6 +108,12 @@ class Home(tk.Frame):
                 break
 
     def start_calc(self, *args):
+        """
+        This methode is called to handle a click on the button to start the calculation.
+
+        :param args: (ignored)
+        :return: None
+        """
         a_b: Final[str] = self.var_a_b.get()
         b_b: Final[str] = self.var_b_b.get()
 

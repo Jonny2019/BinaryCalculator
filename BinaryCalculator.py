@@ -2,7 +2,8 @@
 # -*- coding: iso-8859-1 -*-
 
 """
-BinaryCalculator.py: This script
+BinaryCalculator.py: This script visualizes the calculative process by logging the important steps and presenting the
+final result in the end.
 """
 
 __author__ = "Justus Bendel"
@@ -22,6 +23,10 @@ from FullAdder import FullAdder
 
 
 class BinaryCalculator(tk.Frame):
+    """
+    This class extends a tkinter Frame to draw a UI for the calculative process and several controls.
+    """
+
     MODE_ADDITION: Final[int] = 0
     MODE_MULTIPLICATION: Final[int] = 1
 
@@ -80,6 +85,12 @@ class BinaryCalculator(tk.Frame):
         self.btn_next_step.pack(side=tk.RIGHT, fill=tk.BOTH)
 
     def get_str_operator(self, mode: int) -> str:
+        """
+        This methode returns the fitting arithmetic operator to the current task.
+
+        :param mode: int
+        :return: str
+        """
         if mode == self.MODE_ADDITION:
             return "+"
         elif mode == self.MODE_MULTIPLICATION:
@@ -88,6 +99,11 @@ class BinaryCalculator(tk.Frame):
             return "?"
 
     def do_next_step(self):
+        """
+        This methode interact with the FullAdder-class to perform the next calculation step.
+
+        :return: None
+        """
         self.btn_next_step['state'] = tk.DISABLED
         self.btn_next_step['bg'] = self.COLORS_BTN_NEXT[tk.DISABLED]
 

@@ -42,6 +42,8 @@ class FullAdder(CalculatingUnit):
 
         self.digits_a: Final[List[int]] = self.get_int_list(self.value_a)
         self.digits_b: Final[List[int]] = self.get_int_list(self.value_b)
+        self.digits_a.reverse()
+        self.digits_b.reverse()
 
         gpio.setmode(gpio.BOARD)
         gpio.setup(self.PIN_A, gpio.OUT)
@@ -52,7 +54,6 @@ class FullAdder(CalculatingUnit):
 
     @overrides(CalculatingUnit)
     def prepare_input(self) -> bool:
-        self.digit_pointer += 1
         if self.digits_a[self.digit_pointer] == 1:
             gpio.output(self.PIN_A, gpio.HIGH)
         if self.digits_b[self.digit_pointer] == 1:
@@ -64,6 +65,8 @@ class FullAdder(CalculatingUnit):
     @overrides(CalculatingUnit)
     def read_output(self) -> Dict[int, int]:
         print("output has been read")
+        self.current_carryover = gpio.input(self.PIN_C_OUT)
+        self.digit_pointer += 1
         return {CalculatingUnit.KEY_RESULT: gpio.input(self.PIN_S), CalculatingUnit.KEY_C: gpio.input(self.PIN_C_OUT)}
 
     @overrides(CalculatingUnit)
@@ -72,9 +75,22 @@ class FullAdder(CalculatingUnit):
                                       self.current_carryover)
 
     def clear_input(self) -> None:
+        """
+        This methode sets all outputs to 0.
+
+        :return: None
+        """
         gpio.output(self.PIN_A, gpio.LOW)
         gpio.output(self.PIN_B, gpio.LOW)
         gpio.output(self.PIN_C_IN, gpio.LOW)
+
+    def is_calc_finished(self) -> bool:
+        """
+        This methode checks weather the calculation has finished or not yet.
+
+        :return: bool
+        """
+        return self.digit_pointer == len(self.digits_a)
 
     @staticmethod
     def get_int_list(s: str) -> List[int]:
