@@ -12,7 +12,7 @@ __maintainer__ = "Justus Bendel"
 __email__ = "justus.bendel@live.de"
 __status__ = "Development"
 
-from typing import Dict, Final, List
+from typing import Dict, Final
 
 
 class CalculatingUnit(object):
