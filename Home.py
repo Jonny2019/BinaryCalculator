@@ -109,10 +109,8 @@ class Home(tk.Frame):
         mode: [int] = None
         for opt in self.options_link:
             if opt[0] == mode_name:
-                mode = opt[2]
+                mode = opt[1]
                 break
-
-        print(a_b + ' + ' + b_b)
 
         win = tk.Tk()
         binary_calculator: BinaryCalculator = BinaryCalculator(mode, a_b, b_b, master=win)

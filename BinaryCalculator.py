@@ -15,7 +15,7 @@ __status__ = "Development"
 
 import tkinter as tk
 import tkinter.font as tkf
-from typing import Final
+from typing import Final, Dict
 
 from CalculatingUnit import CalculatingUnit
 from FullAdder import FullAdder
@@ -28,13 +28,21 @@ class BinaryCalculator(tk.Frame):
     WINDOW_TITLE: Final[str] = "Rechner | Binary Calculator"
     WINDOW_GEOMETRY: Final[str] = "800x500"
 
+    COLORS_BTN_NEXT: Final[Dict[str, str]] = {tk.ACTIVE: "#17a589", tk.DISABLED: "#99a3a4"}
+
     TXT_HEADER: Final[str] = "Berechnet wird {} {} {}..."
+    TXT_STEP_LOG: Final[str] = "--> S = {}, C_OUT = {}"
+
+    result: str = ""
 
     def __init__(self, mode: int, value_a: str, value_b: str, master=None):
         if master is not None:
             master.title(self.WINDOW_TITLE)
             master.geometry(self.WINDOW_GEOMETRY)
         super(BinaryCalculator, self).__init__(master)
+
+        if mode == self.MODE_ADDITION:
+            self.calculating_unit: CalculatingUnit = FullAdder(value_a, value_b)
 
         self.master = master
         self.pack()
@@ -47,10 +55,17 @@ class BinaryCalculator(tk.Frame):
 
         self.frm_calc_steps: tk.Frame = tk.Frame(self)
         self.scrollbar: tk.Scrollbar = tk.Scrollbar(self.frm_calc_steps)
-        self.listbox_steps: tk.Listbox = tk.Listbox(self.frm_calc_steps, yscrollcommand=self.scrollbar.set)
+        self.listbox_steps: tk.Listbox = tk.Listbox(self.frm_calc_steps, yscrollcommand=self.scrollbar.set,
+                                                    font=self.font_text)
 
-        for i in range(0, 20):
-            self.listbox_steps.insert(tk.END, "This is line number " + str(i))
+        self.listbox_steps.insert(tk.END, self.calculating_unit.get_output_str())
+
+        self.frm_calc_ctrl: tk.Frame = tk.Frame(self)
+        self.no_stop: tk.IntVar = tk.IntVar(self)
+        self.cbtn_no_stop: tk.Checkbutton = tk.Checkbutton(self.frm_calc_ctrl, text="Nicht pausieren",
+                                                           variable=self.no_stop)
+        self.btn_next_step: tk.Button = tk.Button(self.frm_calc_ctrl, text="ausführen", command=self.do_next_step,
+                                                  bg=self.COLORS_BTN_NEXT[tk.ACTIVE])
 
         self.lbl_header.pack()
 
@@ -60,8 +75,9 @@ class BinaryCalculator(tk.Frame):
 
         self.scrollbar.config(command=self.listbox_steps.yview)
 
-        if mode == self.MODE_ADDITION:
-            self.calculating_unit: CalculatingUnit = FullAdder(value_a, value_b)
+        self.frm_calc_ctrl.pack()
+        self.cbtn_no_stop.pack(side=tk.LEFT)
+        self.btn_next_step.pack(side=tk.RIGHT, fill=tk.BOTH)
 
     def get_str_operator(self, mode: int) -> str:
         if mode == self.MODE_ADDITION:
@@ -70,3 +86,23 @@ class BinaryCalculator(tk.Frame):
             return "*"
         else:
             return "?"
+
+    def do_next_step(self):
+        self.btn_next_step['state'] = tk.DISABLED
+        self.btn_next_step['bg'] = self.COLORS_BTN_NEXT[tk.DISABLED]
+
+        result: Final[Dict[int, int]] = self.calculating_unit.read_output()
+        self.result = str(result[CalculatingUnit.KEY_RESULT]) + self.result
+
+        print(result)
+        print(self.result)
+
+        self.listbox_steps.insert(tk.END, self.TXT_STEP_LOG.format(result[CalculatingUnit.KEY_RESULT],
+                                                                   result[CalculatingUnit.KEY_C]))
+
+        self.calculating_unit.prepare_input()
+
+        self.listbox_steps.insert(tk.END, self.calculating_unit.get_output_str())
+
+        self.btn_next_step['bg'] = self.COLORS_BTN_NEXT[tk.ACTIVE]
+        self.btn_next_step['state'] = tk.ACTIVE

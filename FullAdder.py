@@ -28,6 +28,7 @@ class FullAdder(CalculatingUnit):
     PIN_B: Final[int] = 11      # GPIO0 <-> physical: GPIO17
     PIN_C_IN: Final[int] = 13   # GPIO2 <-> physical: GPIO27
     PIN_C_OUT: Final[int] = 15  # GPIO3 <-> physical: GPIO22
+    PIN_S: Final[int] = 29      # GPIO21<-> physical: GPIO5
 
     TXT_OUTPUT: Final[str] = "Eingabe: A={}, B={}, C={}"
 
@@ -41,20 +42,38 @@ class FullAdder(CalculatingUnit):
         self.digits_a: Final[List[int]] = self.get_int_list(self.value_a)
         self.digits_b: Final[List[int]] = self.get_int_list(self.value_b)
 
+        gpio.setmode(gpio.BOARD)
+        gpio.setup(self.PIN_A, gpio.OUT)
+        gpio.setup(self.PIN_B, gpio.OUT)
+        gpio.setup(self.PIN_C_IN, gpio.OUT)
+        gpio.setup(self.PIN_C_OUT, gpio.IN)
+        gpio.setup(self.PIN_S, gpio.IN)
+
     @overrides(CalculatingUnit)
-    def prepare_input(self, params: Dict[int, int]) -> bool:
-        print("input has been prepared with params " + str(params))
+    def prepare_input(self) -> bool:
+        self.digit_pointer += 1
+        if self.digits_a[self.digit_pointer] == 1:
+            gpio.output(self.PIN_A, gpio.HIGH)
+        if self.digits_b[self.digit_pointer] == 1:
+            gpio.output(self.PIN_B, gpio.HIGH)
+        if self.current_carryover == 1:
+            gpio.output(self.PIN_C_IN, gpio.HIGH)
         return True
 
     @overrides(CalculatingUnit)
     def read_output(self) -> Dict[int, int]:
         print("output has been read")
-        return {CalculatingUnit.KEY_RESULT: 1, CalculatingUnit.KEY_C: 0}
+        return {CalculatingUnit.KEY_RESULT: gpio.input(self.PIN_S), CalculatingUnit.KEY_C: gpio.input(self.PIN_C_OUT)}
 
     @overrides(CalculatingUnit)
     def get_output_str(self) -> str:
         return self.TXT_OUTPUT.format(self.digits_a[self.digit_pointer], self.digits_b[self.digit_pointer],
                                       self.current_carryover)
+
+    def clear_input(self) -> None:
+        gpio.output(self.PIN_A, gpio.LOW)
+        gpio.output(self.PIN_B, gpio.LOW)
+        gpio.output(self.PIN_C_IN, gpio.LOW)
 
     @staticmethod
     def get_int_list(s: str) -> List[int]:
