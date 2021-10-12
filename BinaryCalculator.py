@@ -18,6 +18,7 @@ import tkinter as tk
 import tkinter.font as tkf
 from typing import Final, Dict
 
+import tools
 from CalculatingUnit import CalculatingUnit
 from FullAdder import FullAdder
 
@@ -37,6 +38,7 @@ class BinaryCalculator(tk.Frame):
 
     TXT_HEADER: Final[str] = "Berechnet wird {} {} {}..."
     TXT_STEP_LOG: Final[str] = "--> S = {}, C_OUT = {}"
+    TXT_Result: Final[str] = "{} {} {} = {}"
 
     result: str = ""
 
@@ -46,8 +48,10 @@ class BinaryCalculator(tk.Frame):
             master.geometry(self.WINDOW_GEOMETRY)
         super(BinaryCalculator, self).__init__(master)
 
+        self.value_a, self.value_b = tools.fill_up_with_zeros(value_a, value_b)
+
         if mode == self.MODE_ADDITION:
-            self.calculating_unit: CalculatingUnit = FullAdder(value_a, value_b)
+            self.calculating_unit: CalculatingUnit = FullAdder(self.value_a, self.value_b)
 
         self.master = master
         self.pack()
@@ -72,6 +76,9 @@ class BinaryCalculator(tk.Frame):
         self.btn_next_step: tk.Button = tk.Button(self.frm_calc_ctrl, text="ausführen", command=self.do_next_step,
                                                   bg=self.COLORS_BTN_NEXT[tk.ACTIVE])
 
+        self.lbl_result_binary: tk.Label = tk.Label(self, font=self.font_text)
+        self.lbl_result_decimal: tk.Label = tk.Label(self, font=self.font_text)
+
         self.lbl_header.pack()
 
         self.frm_calc_steps.pack()
@@ -83,6 +90,9 @@ class BinaryCalculator(tk.Frame):
         self.frm_calc_ctrl.pack()
         self.cbtn_no_stop.pack(side=tk.LEFT)
         self.btn_next_step.pack(side=tk.RIGHT, fill=tk.BOTH)
+
+        self.lbl_result_binary.pack()
+        self.lbl_result_decimal.pack()
 
     def get_str_operator(self, mode: int) -> str:
         """
@@ -120,5 +130,15 @@ class BinaryCalculator(tk.Frame):
 
         self.listbox_steps.insert(tk.END, self.calculating_unit.get_output_str())
 
-        self.btn_next_step['bg'] = self.COLORS_BTN_NEXT[tk.ACTIVE]
-        self.btn_next_step['state'] = tk.ACTIVE
+        if not self.calculating_unit.is_calc_finished():
+            self.btn_next_step['bg'] = self.COLORS_BTN_NEXT[tk.ACTIVE]
+            self.btn_next_step['state'] = tk.ACTIVE
+
+            if self.no_stop.get() == 1:
+                self.do_next_step()
+
+        else:
+            self.lbl_result_binary['text'] = self.TXT_Result.format(self.value_a, self.value_b, self.result)
+            self.lbl_result_decimal['text'] = self.TXT_Result.format(tools.binary_to_decimal(self.value_a),
+                                                                     tools.binary_to_decimal(self.value_b),
+                                                                     tools.binary_to_decimal(self.result))

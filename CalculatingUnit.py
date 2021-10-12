@@ -25,11 +25,10 @@ class CalculatingUnit(object):
     KEY_C: Final[int] = 2       # key to the value of the carryover (In/OUT)
     KEY_RESULT: Final[int] = 3  # key to the value of the calculation result
 
-    def prepare_input(self, params: Dict[int, int]) -> bool:
+    def prepare_input(self) -> bool:
         """
         This methode is supposed to handle the preparation of a calculation by the experimental setup.
 
-        :param params: Dict[int, int]
         :return: bool
         """
         pass
@@ -47,5 +46,13 @@ class CalculatingUnit(object):
         """
         This methode is supposed to return a string which summarizes to current occupation and can be shown to the user.
         :return: str
+        """
+        pass
+
+    def is_calc_finished(self) -> bool:
+        """
+        This methode checks weather the calculation has finished or not yet.
+
+        :return: bool
         """
         pass

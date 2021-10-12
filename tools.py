@@ -12,7 +12,7 @@ __maintainer__ = "Justus Bendel"
 __email__ = "justus.bendel@live.de"
 __status__ = "Production"
 
-from typing import Final
+from typing import Final, List, Tuple
 
 
 def overrides(interface_class):
@@ -82,3 +82,29 @@ def decimal_to_binary(d: int) -> str:
     except ValueError as e:
         print(e)
     return b
+
+
+def fill_up_with_zeros(v1: str, v2: str) -> Tuple[str, str]:
+    if len(v1) == len(v2):
+        print("even")
+        return v1, v2
+    elif len(v1) > len(v2):
+        print("v1 > v2")
+        l2: List[str] = list(v2)
+        for i in range(0, len(v1) - len(v2)):
+            l2.insert(0, "0")
+            print(l2)
+        return v1, list_to_str(l2)
+    elif len(v1) < len(v2):
+        print("v1 < v2")
+        l1: List[str] = list(v1)
+        for i in range(0, len(v2) - len(v1)):
+            l1.insert(0, "0")
+        return list_to_str(l1), v2
+
+
+def list_to_str(lst: List) -> str:
+    s: str = ""
+    for i in lst:
+        s += i
+    return s

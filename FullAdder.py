@@ -84,12 +84,8 @@ class FullAdder(CalculatingUnit):
         gpio.output(self.PIN_B, gpio.LOW)
         gpio.output(self.PIN_C_IN, gpio.LOW)
 
+    @overrides(CalculatingUnit)
     def is_calc_finished(self) -> bool:
-        """
-        This methode checks weather the calculation has finished or not yet.
-
-        :return: bool
-        """
         return self.digit_pointer == len(self.digits_a)
 
     @staticmethod
