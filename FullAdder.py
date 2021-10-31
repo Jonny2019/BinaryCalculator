@@ -54,6 +54,7 @@ class FullAdder(CalculatingUnit):
 
     @overrides(CalculatingUnit)
     def prepare_input(self) -> bool:
+        self.clear_input()
         if self.digits_a[self.digit_pointer] == 1:
             gpio.output(self.PIN_A, gpio.HIGH)
         if self.digits_b[self.digit_pointer] == 1:
