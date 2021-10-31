@@ -130,9 +130,9 @@ class BinaryCalculator(tk.Frame):
         self.listbox_steps.insert(tk.END, self.TXT_STEP_LOG.format(result[CalculatingUnit.KEY_RESULT],
                                                                    result[CalculatingUnit.KEY_C]))
 
-        self.listbox_steps.insert(tk.END, self.calculating_unit.get_output_str())
-
         if not self.calculating_unit.is_calc_finished():
+            self.listbox_steps.insert(tk.END, self.calculating_unit.get_output_str())
+
             self.btn_next_step['bg'] = self.COLORS_BTN_NEXT[tk.ACTIVE]
             self.btn_next_step['state'] = tk.ACTIVE
 
