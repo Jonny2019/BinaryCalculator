@@ -141,6 +141,10 @@ class BinaryCalculator(tk.Frame):
 
         else:
             self.calculating_unit.cleanup()
+
+            if result[CalculatingUnit.KEY_C] == 1:
+                self.result = "1" + self.result
+
             self.lbl_result_binary['text'] = self.TXT_Result.format(self.value_a, tools.get_operator_sign(self.mode),
                                                                     self.value_b, self.result)
             self.lbl_result_decimal['text'] = self.TXT_Result.format(tools.binary_to_decimal(self.value_a),
