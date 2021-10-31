@@ -53,6 +53,8 @@ class BinaryCalculator(tk.Frame):
         if mode == self.MODE_ADDITION:
             self.calculating_unit: CalculatingUnit = FullAdder(self.value_a, self.value_b)
 
+        self.mode = mode
+
         self.master = master
         self.pack()
 
@@ -117,6 +119,8 @@ class BinaryCalculator(tk.Frame):
         self.btn_next_step['state'] = tk.DISABLED
         self.btn_next_step['bg'] = self.COLORS_BTN_NEXT[tk.DISABLED]
 
+        self.calculating_unit.prepare_input()
+
         result: Final[Dict[int, int]] = self.calculating_unit.read_output()
         self.result = str(result[CalculatingUnit.KEY_RESULT]) + self.result
 
@@ -125,8 +129,6 @@ class BinaryCalculator(tk.Frame):
 
         self.listbox_steps.insert(tk.END, self.TXT_STEP_LOG.format(result[CalculatingUnit.KEY_RESULT],
                                                                    result[CalculatingUnit.KEY_C]))
-
-        self.calculating_unit.prepare_input()
 
         self.listbox_steps.insert(tk.END, self.calculating_unit.get_output_str())
 
@@ -139,7 +141,9 @@ class BinaryCalculator(tk.Frame):
 
         else:
             self.calculating_unit.cleanup()
-            self.lbl_result_binary['text'] = self.TXT_Result.format(self.value_a, self.value_b, self.result)
+            self.lbl_result_binary['text'] = self.TXT_Result.format(self.value_a, tools.get_operator_sign(self.mode),
+                                                                    self.value_b, self.result)
             self.lbl_result_decimal['text'] = self.TXT_Result.format(tools.binary_to_decimal(self.value_a),
+                                                                     tools.get_operator_sign(self.mode),
                                                                      tools.binary_to_decimal(self.value_b),
                                                                      tools.binary_to_decimal(self.result))
