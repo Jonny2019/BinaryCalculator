@@ -138,6 +138,7 @@ class BinaryCalculator(tk.Frame):
                 self.do_next_step()
 
         else:
+            self.calculating_unit.cleanup()
             self.lbl_result_binary['text'] = self.TXT_Result.format(self.value_a, self.value_b, self.result)
             self.lbl_result_decimal['text'] = self.TXT_Result.format(tools.binary_to_decimal(self.value_a),
                                                                      tools.binary_to_decimal(self.value_b),

@@ -56,3 +56,11 @@ class CalculatingUnit(object):
         :return: bool
         """
         pass
+
+    def cleanup(self) -> None:
+        """
+        This methode should perform necessary cleanup tasks for used GPIOs.
+
+        :return: None
+        """
+        pass

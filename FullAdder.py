@@ -86,7 +86,11 @@ class FullAdder(CalculatingUnit):
 
     @overrides(CalculatingUnit)
     def is_calc_finished(self) -> bool:
-        return self.digit_pointer == len(self.digits_a)
+        return self.digit_pointer + 1 == len(self.digits_a)
+
+    @overrides(CalculatingUnit)
+    def cleanup(self) -> None:
+        gpio.cleanup()
 
     @staticmethod
     def get_int_list(s: str) -> List[int]:
