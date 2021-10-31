@@ -12,7 +12,7 @@ __maintainer__ = "Justus Bendel"
 __email__ = "justus.bendel@live.de"
 __status__ = "Development"
 
-import RPI.GPIO as gpio
+import RPi.GPIO as gpio
 from typing import List, Dict, Final
 
 from CalculatingUnit import CalculatingUnit
