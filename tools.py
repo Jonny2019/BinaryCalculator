@@ -14,8 +14,6 @@ __status__ = "Production"
 
 from typing import Final, List, Tuple
 
-from BinaryCalculator import BinaryCalculator
-
 
 def overrides(interface_class):
     """
@@ -113,7 +111,7 @@ def list_to_str(lst: List) -> str:
 
 
 def get_operator_sign(mode: int) -> str:
-    if mode == BinaryCalculator.MODE_ADDITION:
+    if mode == 0:
         return "+"
     else:
         return "*"
