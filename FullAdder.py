@@ -75,12 +75,8 @@ class FullAdder(CalculatingUnit):
         return self.TXT_OUTPUT.format(self.digits_a[self.digit_pointer], self.digits_b[self.digit_pointer],
                                       self.current_carryover)
 
+    @overrides(CalculatingUnit)
     def clear_input(self) -> None:
-        """
-        This methode sets all outputs to 0.
-
-        :return: None
-        """
         gpio.output(self.PIN_A, gpio.LOW)
         gpio.output(self.PIN_B, gpio.LOW)
         gpio.output(self.PIN_C_IN, gpio.LOW)

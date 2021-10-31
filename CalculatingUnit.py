@@ -57,6 +57,14 @@ class CalculatingUnit(object):
         """
         pass
 
+    def clear_input(self) -> None:
+        """
+        This methode should sets all outputs to 0.
+
+        :return: None
+        """
+        pass
+
     def cleanup(self) -> None:
         """
         This methode should perform necessary cleanup tasks for used GPIOs.

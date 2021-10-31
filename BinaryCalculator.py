@@ -140,6 +140,7 @@ class BinaryCalculator(tk.Frame):
                 self.do_next_step()
 
         else:
+            self.calculating_unit.clear_input()
             self.calculating_unit.cleanup()
 
             if result[CalculatingUnit.KEY_C] == 1:
